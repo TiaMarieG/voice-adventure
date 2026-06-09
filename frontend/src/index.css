@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Google Fonts are loaded via index.html ── */
+
+/* ── CSS Custom Properties ─────────────────────────────────────── */
+:root {
+  --color-void:         #080705;
+  --color-stone:        #100e0b;
+  --color-surface:      #1a1712;
+  --color-border:       #2e261c;
+  --color-muted:        #4a3d2e;
+  --color-ink:          #7a6a55;
+  --color-parchment:    #e8d9c0;
+  --color-faded:        #b0a090;
+  --color-torch:        #c8763a;
+  --color-torch-glow:   #e8952a;
+  --color-crimson:      #8b1a1a;
+  --color-crimson-bright:#c42020;
+  --color-moss:         #2d5a35;
+  --color-moss-bright:  #3d7a45;
+
+  --font-heading: 'Cinzel', serif;
+  --font-body:    'Lora', serif;
+}
+
+/* ── Base Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  background-color: var(--color-void);
+  color: var(--color-parchment);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Noise texture overlay (applied to body via pseudo) ─────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px 180px;
+  opacity: 0.03;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────── */
+::-webkit-scrollbar         { width: 6px; }
+::-webkit-scrollbar-track   { background: var(--color-stone); }
+::-webkit-scrollbar-thumb   { background: var(--color-muted); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-ink); }
+
+/* ── Typewriter cursor ──────────────────────────────────────────── */
+.typewriter-cursor::after {
+  content: '|';
+  display: inline-block;
+  color: var(--color-torch);
+  animation: blink 0.8s step-end infinite;
+  margin-left: 1px;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ── Stone texture border effect ───────────────────────────────── */
+.stone-border {
+  border: 1px solid var(--color-border);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.03),
+    inset 0 -1px 0 rgba(0,0,0,0.4),
+    0 0 0 1px rgba(0,0,0,0.6);
+}
+
+/* ── Torch glow ─────────────────────────────────────────────────── */
+.torch-glow {
+  box-shadow:
+    0 0 12px rgba(200, 118, 58, 0.4),
+    0 0 40px rgba(200, 118, 58, 0.15);
+}
+
+.torch-glow-text {
+  text-shadow: 0 0 20px rgba(200, 118, 58, 0.6);
+}
+
+/* ── Status badge ───────────────────────────────────────────────── */
+.status-badge {
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
