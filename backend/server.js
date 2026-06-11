@@ -1,11 +1,9 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import transcribeRouter from './routes/transcribe.js';
 import dmRouter from './routes/dm.js';
 import ttsRouter from './routes/tts.js';
-
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
