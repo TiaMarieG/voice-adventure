@@ -1,33 +1,19 @@
 /**
  * POST /api/transcribe
  *
- * Receives: multipart/form-data with an "audio" field (webm/ogg blob)
- * Returns:  { transcript: string, mock?: boolean }
+ * Receives: multipart/form-data with an "audio" field (webm blob)
+ * Returns:  { transcript: string }
  *
- * ── Integration point ──────────────────────────────────────────
- * Replace the mock block below with one of:
+ * Uses Groq Whisper (whisper-large-v3) — faster and cheaper than OpenAI.
  *
- * A) OpenAI Whisper API
- *    npm install openai
- *    import OpenAI from 'openai';
- *    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
- *    const file  = new File([req.file.buffer], 'recording.webm', { type: 'audio/webm' });
- *    const result = await openai.audio.transcriptions.create({ model: 'whisper-1', file });
- *    return res.json({ transcript: result.text });
- *
- * B) Groq Whisper API (lower latency)
- *    npm install groq-sdk
- *    import Groq from 'groq-sdk';
- *    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
- *    const result = await groq.audio.transcriptions.create({
- *      model: 'whisper-large-v3', file: new File([req.file.buffer], 'rec.webm')
- *    });
- *    return res.json({ transcript: result.text });
- * ──────────────────────────────────────────────────────────────
+ * Setup:
+ *   npm install groq-sdk multer
+ *   GROQ_API_KEY=... in your .env
  */
 
 import express from 'express';
 import multer from 'multer';
+import Groq from 'groq-sdk';
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -38,15 +24,26 @@ router.post('/', upload.single('audio'), async (req, res) => {
       return res.status(400).json({ error: 'No audio file received.' });
     }
 
-    // ── TODO: Replace this mock with real Whisper integration ──
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+    
     console.log(`[Transcribe] Received audio — ${req.file.size} bytes`);
 
-    // Mock: echo back a placeholder so the frontend knows STT isn't wired up yet
-    return res.json({
-      transcript: '',
-      mock: true,
-      message: 'Whisper STT not yet integrated. Use the text input below to test story logic.',
+    // Groq requires a File object, not a raw Buffer
+    const file = new File(
+      [req.file.buffer],
+      'recording.webm',
+      { type: req.file.mimetype || 'audio/webm' }
+    );
+
+    const result = await groq.audio.transcriptions.create({
+      model: 'whisper-large-v3',
+      file,
+      response_format: 'json',
+      language: 'en',       // force English; remove if you want auto-detect
     });
+
+    console.log(`[Transcribe] → "${result.text}"`);
+    return res.json({ transcript: result.text });
 
   } catch (err) {
     console.error('[Transcribe Error]', err);

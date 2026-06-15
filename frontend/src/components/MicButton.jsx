@@ -3,7 +3,7 @@ import { useMicrophone } from '../hooks/useMicrophone';
 import { useGame } from '../context/GameContext';
 
 export default function MicButton() {
-   const { state, processAction, resetGame } = useGame();
+   const { state, processAction, resetGame, setStatus } = useGame();
    const { status, outcome } = state;
 
    const { isRecording, audioLevel, hasPermission, startRecording, stopRecording } = useMicrophone();
@@ -28,8 +28,7 @@ export default function MicButton() {
          processAction(blob, '');
       } else {
          await startRecording();
-         // tell the game context we're in listening state
-         state; // (setStatus is called inside useMicrophone start)
+         setStatus('listening'); // ← tell game context we're recording
       }
    }
 
