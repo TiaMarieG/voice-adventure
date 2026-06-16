@@ -14,7 +14,6 @@
 import express from 'express';
 import multer from 'multer';
 import Groq from 'groq-sdk';
-import Groq from 'groq-sdk';
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
