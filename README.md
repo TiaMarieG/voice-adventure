@@ -36,7 +36,7 @@ Have **2 terminals** open.
 * **Voice input:** State your action aloud, no typing required!
 * **AI Dungeon Master:** Groq/Llama 3 evaluates the player's choices and generates a cinematic narration of the outcome.
 * **Speech-to-text:** Groq Whisper transcribes your words in real time.
-* **Text-to-speech** The DM's narration is read aloud through ElevenLabs voice synthesis.
+* **Text-to-speech:** The DM's narration is read aloud through ElevenLabs voice synthesis.
 * **Branching story:** 4 acts, with multiple outcomes per act!
 
 ---
@@ -44,13 +44,13 @@ Have **2 terminals** open.
 ## Set Up Steps
 
 ### Backend
-Open new a new terminal and then run:
+Open a new terminal and then run:
 ```bash
 cd backend
 npm install
 ```
-Open a separate terminal from the backend and then run:
 ### Frontend
+Open a separate terminal from the backend and then run:
 ```bash
 cd frontend
 npm install
