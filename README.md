@@ -91,7 +91,12 @@ GROQ_MODEL=llama3-70b-8192
 3. Click on **ElevenAPI** from the Eleven products dropdown in the top left
 4. Look for the Configure section and click **API Keys**
 5. Then click **Create Key** in the upper right
-4. Copy the ID! It won't be shown again
+6. Click the **Restrict Key** switch into the off position 
+
+*Don't worry about it getting leaked, if you're the free tier you won't get charged for anything- it'll stop when it reaches your limit of tokens.*
+
+7. Give it name if you'd like and then click **Create Key**
+8. Copy the ID! It won't be shown again
 
 
 ```dotenv
