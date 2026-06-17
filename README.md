@@ -110,11 +110,11 @@ ELEVENLABS_API_KEY=your key here!!
 
 *Option A: Select a VOICE_ID from the .env comments*
 
-* The `.env` should already contain 2 different preselected DM voices (example: 2tTjAGX0n5ajDmazDcWk), copy the ID number into the VOICE_ID line and you're set!
+* The `.env` has a default voice provided. More voices through their library can be accessed by their paid subscription. Once you have your paid account, simply copy the ID number into the VOICE_ID line and you're set!
 
 *Option B: pick your own voice*
 1. Go to https://elevenlabs.io/app/voice-library
 2. Find a voice that you like
 3. Click a voice to **Add to My Voices**
 4. Go to **My Voices**, click the 3 dots on the right of the voice's entry and select **Copy Voice ID**
-1. Paste the just copied ID into the empty line of the `.env` and you're set!
+1. Paste the just copied ID into the line of the `.env` and you're set!
