@@ -120,18 +120,32 @@ export function GameProvider({ children }) {
          //   }
          //
          // Mock path (used now):
-         const result = evaluateAction(state.currentAct, transcript);
-         const { outcome, narration: dmNarration, nextAct } = result;
+         const dmResult = await getDMResponse({
+            transcript,
+            history: state.history,
+            act: state.currentAct,
+            systemPrompt: DM_SYSTEM_PROMPT,
+         });
+
+         const {
+            response: dmNarration,
+            outcome,
+            nextAct,
+         } = dmResult;
 
          // ── Step 3: TTS ─────────────────────────────────────────
          // ── TODO (AI integration): call /api/tts and play audio ──
          //
-         // const ttsResult = await synthesizeSpeech(dmNarration);
-         // if (!ttsResult.mock) {
-         //   const audioUrl = URL.createObjectURL(ttsResult.audioBlob);
-         //   const audio    = new Audio(audioUrl);
-         //   await audio.play();
-         // }
+         const ttsResult = await synthesizeSpeech(dmNarration);
+
+         if (!ttsResult.mock) {
+            const audioUrl = URL.createObjectURL(ttsResult.audioBlob);
+            const audio = new Audio(audioUrl);
+
+            audio.onended = () => URL.revokeObjectURL(audioUrl);
+
+            await audio.play();
+         }
 
          // ── Step 4: Update game state ───────────────────────────
          if (outcome === OUTCOMES.LOOP) {

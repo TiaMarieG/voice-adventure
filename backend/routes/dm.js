@@ -183,7 +183,7 @@ router.post('/', async (req, res) => {
     const fullPrompt = buildPrompt(systemPrompt || BASE_DM_PROMPT, act);
 
     const completion = await groq.chat.completions.create({
-      model: process.env.GROQ_MODEL || 'llama3-70b-8192',
+      model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
       messages: [
         { role: 'system', content: fullPrompt },
         ...history,
