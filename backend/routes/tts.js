@@ -59,15 +59,21 @@ router.post('/', async (req, res) => {
       },
     });
 
-    console.log('[TTS] Returned type:', typeof audioStream);
-    console.log('[TTS] Constructor:', audioStream?.constructor?.name);
-    console.log('[TTS] Keys:', Object.keys(audioStream || {}));
+    const reader = audioStream.getReader();
+    const chunks = [];
 
-    return res.json({
-      debug: true,
-      type: typeof audioStream,
-      constructor: audioStream?.constructor?.name,
-    });
+    while (true) {
+      const { done, value } = await reader.read();
+
+      if (done) break;
+
+      chunks.push(Buffer.from(value));
+    }
+
+    const audioBuffer = Buffer.concat(chunks);
+
+    res.setHeader('Content-Type', 'audio/mpeg');
+    res.send(audioBuffer);
 
   } catch (err) {
   console.error('[TTS Error Full]', err);
