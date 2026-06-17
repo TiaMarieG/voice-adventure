@@ -52,22 +52,51 @@ router.post('/', async (req, res) => {
 
     const audioStream = await elevenlabs.textToSpeech.convert(targetVoice, {
       text,
-      model_id: 'eleven_turbo_v2',        // lowest latency; swap to eleven_multilingual_v2 if needed
+      model_id: 'eleven_multilingual_v2',
       voice_settings: {
-        stability:        0.4,            // lower = more expressive / dramatic
-        similarity_boost: 0.8,            // higher = more consistent to the chosen voice
+        stability: 0.4,
+        similarity_boost: 0.8,
       },
     });
 
-    res.setHeader('Content-Type', 'audio/mpeg');
-    res.setHeader('Transfer-Encoding', 'chunked');
-    audioStream.pipe(res);
+    console.log('[TTS] Returned type:', typeof audioStream);
+    console.log('[TTS] Constructor:', audioStream?.constructor?.name);
+    console.log('[TTS] Keys:', Object.keys(audioStream || {}));
+
+    return res.json({
+      debug: true,
+      type: typeof audioStream,
+      constructor: audioStream?.constructor?.name,
+    });
 
   } catch (err) {
-    console.error('[TTS Error]', err);
-    // Don't crash the client — return a recognizable error shape
-    res.status(500).json({ error: 'TTS synthesis failed.', detail: err.message });
+  console.error('[TTS Error Full]', err);
+
+  if (err.body) {
+    try {
+      const reader = err.body.getReader();
+      const decoder = new TextDecoder();
+
+      let text = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        text += decoder.decode(value);
+      }
+
+      console.error('[TTS Error Body]', text);
+    } catch (e) {
+      console.error('[TTS Error Body Parse Failed]', e);
+    }
   }
+
+  res.status(err.statusCode || 500).json({
+    error: 'TTS synthesis failed.',
+    detail: err.message,
+    statusCode: err.statusCode,
+  });
+}
 });
 
 export default router;
