@@ -28,7 +28,6 @@ export const OUTCOMES = {
 };
 
 // ── DM System Prompt ──────────────────────────────────────────────
-// This is sent as the system message when the Groq / LLM DM is integrated.
 export const DM_SYSTEM_PROMPT = `[ROLE]
 You are an expert, immersive Dungeon Master (DM) for a voice-based text adventure. Your tone is cinematic, dark, and urgent.
 
@@ -39,8 +38,6 @@ You are an expert, immersive Dungeon Master (DM) for a voice-based text adventur
 4. Do not include formatting like asterisks (*actions*) or brackets; output clean, spoken prose only.`;
 
 // ── Narrations ────────────────────────────────────────────────────
-// Each string is clean prose with no asterisks or brackets,
-// ready to be passed directly to TTS.
 export const narrations = {
 
    [ACTS.ACT_1]: {
@@ -115,15 +112,7 @@ export const narrations = {
    },
 };
 
-// ── Mock Evaluator ────────────────────────────────────────────────
-// Keyword-based branching until the LLM (Groq/Llama) is integrated.
-// Returns: { outcome, narration, nextAct }
-//
-// To integrate the real LLM DM:
-//  1. Call POST /api/dm with { transcript, history, act, systemPrompt }
-//  2. Use the returned `response` string as the narration
-//  3. Parse the act advancement from response or use a second structured call
-//
+// ── Evaluator ────────────────────────────────────────────────
 export function evaluateAction(act, transcript) {
    const t = transcript.toLowerCase().trim();
 

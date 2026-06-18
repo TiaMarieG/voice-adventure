@@ -10,10 +10,10 @@ const initialState = {
    currentAct: ACTS.ACT_1,
    narration: narrations[ACTS.ACT_1].intro,
    transcript: '',
-   status: 'idle',      // 'idle' | 'listening' | 'processing' | 'narrating' | 'gameOver' | 'victory'
-   outcome: null,        // last OUTCOMES value
-   history: [],          // [ { role: 'user'|'assistant', content: string } ]
-   loopCount: 0,           // how many times the curse has reset the player
+   status: 'idle',
+   outcome: null,
+   history: [],
+   loopCount: 0, 
 };
 
 // ── Reducer ──────────────────────────────────────────────────────
@@ -78,14 +78,12 @@ export function GameProvider({ children }) {
 
       try {
          // ── Step 1: Transcribe ──────────────────────────────────
-         // If a textOverride is provided (dev mode text input), skip STT entirely.
          let transcript = textOverride;
 
          if (!transcript && audioBlob) {
             const sttResult = await transcribeAudio(audioBlob);
 
             if (sttResult.mock) {
-               // Backend STT not yet integrated — prompt user to use text input
                dispatch({ type: 'SET_STATUS', payload: 'idle' });
                dispatch({
                   type: 'SET_NARRATION',
@@ -103,23 +101,7 @@ export function GameProvider({ children }) {
 
          dispatch({ type: 'SET_TRANSCRIPT', payload: transcript });
 
-         // ── Step 2: Get DM response ─────────────────────────────
-         // ── TODO (AI integration): swap the mock evaluator below for a real API call ──
-         //
-         // Real path (once /api/dm is wired up):
-         //   const dmResult = await getDMResponse({
-         //     transcript,
-         //     history:      state.history,
-         //     act:          state.currentAct,
-         //     systemPrompt: DM_SYSTEM_PROMPT,
-         //   });
-         //   if (!dmResult.mock) {
-         //     // parse outcome + nextAct from LLM response
-         //     // (you'll need a structured JSON response or a second classification call)
-         //     ...
-         //   }
-         //
-         // Mock path (used now):
+         // ── Step 2: Get DM response ─────────────────────────────:
          const dmResult = await getDMResponse({
             transcript,
             history: state.history,
@@ -133,9 +115,6 @@ export function GameProvider({ children }) {
             nextAct,
          } = dmResult;
 
-         // ── Step 3: TTS ─────────────────────────────────────────
-         // ── TODO (AI integration): call /api/tts and play audio ──
-         //
          const ttsResult = await synthesizeSpeech(dmNarration);
 
          if (!ttsResult.mock) {
@@ -149,13 +128,10 @@ export function GameProvider({ children }) {
 
          // ── Step 4: Update game state ───────────────────────────
          if (outcome === OUTCOMES.LOOP) {
-            // Small delay so the "loop" narration renders before resetting the act
             dispatch({
                type: 'LOOP_RESTART',
                payload: { narration: dmNarration },
             });
-            // After narration finishes, the loop act resets to ACT_1
-            // but we keep the full narration text visible so the player reads the curse
             return;
          }
 

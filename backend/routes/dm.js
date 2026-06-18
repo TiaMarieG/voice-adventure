@@ -14,25 +14,7 @@
  *     "outcome":   "CONTINUE | GAME_OVER | LOOP | VICTORY | REDIRECT",
  *     "nextAct":   "ACT_1 | ACT_2 | ACT_3 | ACT_4 | null"
  *   }
- *
- * Setup:
- *   npm install groq-sdk
- *   GROQ_API_KEY=...         in your .env
- *   GROQ_MODEL=llama3-70b-8192  (optional override)
- *
- * ── Integration note for GameContext.jsx ───────────────────────
- * When wiring up the real call, swap the mock block (~line 60) for:
- *
- *   const dmResult = await getDMResponse({
- *     transcript,
- *     history:      state.history,
- *     act:          state.currentAct,
- *     systemPrompt: DM_SYSTEM_PROMPT,
- *   });
- *   // dmResult = { response: string, outcome: string, nextAct: string|null }
- *   const { response: dmNarration, outcome, nextAct } = dmResult;
- *
- * Then continue with the existing LOOP / ADVANCE dispatch logic unchanged.
+ * 
  * ───────────────────────────────────────────────────────────────
  */
 
@@ -40,11 +22,6 @@ import express from 'express';
 import Groq from 'groq-sdk';
 
 const router = express.Router();
-
-// ── Act-specific branching context ───────────────────────────────
-// This tells the LLM exactly what player behaviors lead to each outcome.
-// Mirrors the logic in evaluateAction() so the LLM and the mock evaluator
-// produce consistent results.
 
 const ACT_CONTEXT = {
   ACT_1: {
@@ -130,7 +107,6 @@ Each claims the other is lying. Sunrise is visible just behind them.`,
   },
 };
 
-// ── Fallback prompt if the client forgets to send one ────────────
 const BASE_DM_PROMPT = `[ROLE]
 You are an expert, immersive Dungeon Master for a voice-based text adventure.
 Your tone is cinematic, dark, and urgent.
@@ -140,7 +116,6 @@ Your tone is cinematic, dark, and urgent.
 2. Keep narration to 1-3 sentences so TTS does not lag.
 3. Output clean spoken prose — no asterisks, no brackets, no markdown.`;
 
-// ── Build the full prompt for this turn ──────────────────────────
 function buildPrompt(basePrompt, act) {
   const ctx = ACT_CONTEXT[act];
   if (!ctx) throw new Error(`Unknown act: ${act}`);
@@ -190,13 +165,12 @@ router.post('/', async (req, res) => {
         { role: 'user', content: transcript },
       ],
       max_tokens: 300,
-      temperature: 0.7,             // creative enough for narration, consistent for outcomes
-      response_format: { type: 'json_object' }, // Groq JSON mode — no fences, valid JSON only
+      temperature: 0.7,
+      response_format: { type: 'json_object' },
     });
 
     const raw = completion.choices[0].message.content;
 
-    // Parse — strip fences defensively even in JSON mode
     let parsed;
     try {
       parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
@@ -205,7 +179,6 @@ router.post('/', async (req, res) => {
       return res.status(500).json({ error: 'DM returned malformed JSON.', raw });
     }
 
-    // Validate required fields
     const validOutcomes = ['CONTINUE', 'GAME_OVER', 'LOOP', 'VICTORY', 'REDIRECT'];
     if (!parsed.narration || !validOutcomes.includes(parsed.outcome)) {
       console.error('[DM] Response missing required fields:', parsed);
@@ -214,8 +187,6 @@ router.post('/', async (req, res) => {
 
     console.log(`[DM] → outcome=${parsed.outcome} nextAct=${parsed.nextAct}`);
 
-    // Return shape that GameContext.jsx expects:
-    //   { response: string, outcome: string, nextAct: string|null }
     return res.json({
       response: parsed.narration,
       outcome:  parsed.outcome,

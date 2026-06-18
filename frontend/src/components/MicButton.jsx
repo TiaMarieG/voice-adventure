@@ -22,13 +22,12 @@ export default function MicButton() {
    // ── Mic toggle ───────────────────────────────────────────────
    async function handleMicClick() {
       if (isDisabled) return;
-
       if (isListening) {
          const blob = await stopRecording();
          processAction(blob, '');
       } else {
          await startRecording();
-         setStatus('listening'); // ← tell game context we're recording
+         setStatus('listening'); 
       }
    }
 
