@@ -1,5 +1,8 @@
 # Voice to Venture!
 
+*When you're done speaking to the DM through the microphone, click the red circle to indicate that you're finished!*
+
+
 ## Table of Contents
 1. [Quick Start](#quick-start)
 1. [Team Members](#team-members)
