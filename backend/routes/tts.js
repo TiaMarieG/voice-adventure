@@ -18,16 +18,6 @@
  *   VR6AewLTigWG4xSOukaG  — Arnold    (gravelly, dark)
  *   GBv7mTt0atIp3Br8iCZE  — Thomas    (cinematic baritone)
  *
- * ── Integration note for GameContext.jsx ───────────────────────
- * Uncomment the TTS block (~line 75) and replace the comment with:
- *
- *   const ttsResult = await synthesizeSpeech(dmNarration);
- *   if (!ttsResult.mock) {
- *     const audioUrl = URL.createObjectURL(ttsResult.audioBlob);
- *     const audio = new Audio(audioUrl);
- *     audio.onended = () => URL.revokeObjectURL(audioUrl); // clean up
- *     await audio.play();
- *   }
  * ───────────────────────────────────────────────────────────────
  */
 

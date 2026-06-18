@@ -4,7 +4,7 @@
  * Receives: multipart/form-data with an "audio" field (webm blob)
  * Returns:  { transcript: string }
  *
- * Uses Groq Whisper (whisper-large-v3) — faster and cheaper than OpenAI.
+ * Uses Groq Whisper (whisper-large-v3)
  *
  * Setup:
  *   npm install groq-sdk multer

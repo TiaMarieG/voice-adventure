@@ -14,25 +14,7 @@
  *     "outcome":   "CONTINUE | GAME_OVER | LOOP | VICTORY | REDIRECT",
  *     "nextAct":   "ACT_1 | ACT_2 | ACT_3 | ACT_4 | null"
  *   }
- *
- * Setup:
- *   npm install groq-sdk
- *   GROQ_API_KEY=...         in your .env
- *   GROQ_MODEL=llama3-70b-8192  (optional override)
- *
- * ── Integration note for GameContext.jsx ───────────────────────
- * When wiring up the real call, swap the mock block (~line 60) for:
- *
- *   const dmResult = await getDMResponse({
- *     transcript,
- *     history:      state.history,
- *     act:          state.currentAct,
- *     systemPrompt: DM_SYSTEM_PROMPT,
- *   });
- *   // dmResult = { response: string, outcome: string, nextAct: string|null }
- *   const { response: dmNarration, outcome, nextAct } = dmResult;
- *
- * Then continue with the existing LOOP / ADVANCE dispatch logic unchanged.
+ * 
  * ───────────────────────────────────────────────────────────────
  */
 
