@@ -25,7 +25,6 @@ export function useMicrophone() {
    const animFrameRef = useRef(null);
    const streamRef = useRef(null);
 
-   // Clean up on unmount
    useEffect(() => {
       return () => {
          cancelAnimationFrame(animFrameRef.current);
@@ -53,7 +52,7 @@ export function useMicrophone() {
          const tick = () => {
             analyser.getByteFrequencyData(dataArray);
             const avg = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
-            setAudioLevel(avg / 128); // normalise to 0–1
+            setAudioLevel(avg / 128);
             animFrameRef.current = requestAnimationFrame(tick);
          };
          tick();

@@ -13,9 +13,9 @@ app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:5173' }));
 app.use(express.json());
 
 // ─── Routes ─────────────────────────────────────────────────────
-app.use('/api/transcribe', transcribeRouter); // POST audio → text
-app.use('/api/dm', dmRouter);                // POST transcript → DM narration
-app.use('/api/tts', ttsRouter);              // POST text → audio
+app.use('/api/transcribe', transcribeRouter);
+app.use('/api/dm', dmRouter);
+app.use('/api/tts', ttsRouter);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', message: 'Voice-to-Venture API is running.' });

@@ -1,5 +1,3 @@
-Chatlink - https://claude.ai/share/f96a3957-106c-47d9-8246-d2509e4cc36b
-
 # Voice to Venture!
 
 ## Table of Contents

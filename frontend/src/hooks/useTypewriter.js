@@ -28,7 +28,6 @@ export function useTypewriter(text, speed = 28, onComplete) {
          return;
       }
 
-      // Reset and start fresh whenever `text` changes
       clearInterval(timerRef.current);
       indexRef.current = 0;
       setDisplayText('');
@@ -46,8 +45,6 @@ export function useTypewriter(text, speed = 28, onComplete) {
       }, speed);
 
       return () => clearInterval(timerRef.current);
-      // onComplete is intentionally omitted from deps to avoid re-triggering
-      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [text, speed]);
 
    const skip = () => {

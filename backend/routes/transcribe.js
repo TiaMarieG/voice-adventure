@@ -20,10 +20,6 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-// ── OpenAI alternative (uncomment + npm install openai to use) ──
-// import OpenAI from 'openai';
-// const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
 router.post('/', upload.single('audio'), async (req, res) => {
   try {
     if (!req.file) {
@@ -34,7 +30,6 @@ router.post('/', upload.single('audio'), async (req, res) => {
     
     console.log(`[Transcribe] Received audio — ${req.file.size} bytes`);
 
-    // Groq requires a File object, not a raw Buffer
     const file = new File(
       [req.file.buffer],
       'recording.webm',
@@ -45,7 +40,7 @@ router.post('/', upload.single('audio'), async (req, res) => {
       model: 'whisper-large-v3',
       file,
       response_format: 'json',
-      language: 'en',       // force English; remove if you want auto-detect
+      language: 'en',
     });
 
     console.log(`[Transcribe] → "${result.text}"`);
@@ -54,7 +49,6 @@ router.post('/', upload.single('audio'), async (req, res) => {
   } catch (err) {
     console.error('[Transcribe Error]', err);
 
-    // Surface a clearer message if the API key is missing/invalid
     if (err?.status === 401 || err?.code === 'invalid_api_key') {
       return res.status(500).json({ error: 'Invalid or missing GROQ_API_KEY.' });
     }

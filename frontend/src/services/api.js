@@ -11,7 +11,7 @@
  * pass that flag through so the game context can handle the fallback.
  */
 
-const BASE = '/api'; // Vite proxies /api → http://localhost:3001
+const BASE = '/api';
 
 // ── STT ──────────────────────────────────────────────────────────
 export async function transcribeAudio(audioBlob) {
@@ -20,7 +20,7 @@ export async function transcribeAudio(audioBlob) {
 
    const res = await fetch(`${BASE}/transcribe`, { method: 'POST', body: formData });
    if (!res.ok) throw new Error(`STT ${res.status}: ${await res.text()}`);
-   return res.json(); // { transcript: string, mock?: boolean }
+   return res.json();
 }
 
 // ── LLM DM ───────────────────────────────────────────────────────
@@ -31,7 +31,7 @@ export async function getDMResponse({ transcript, history, act, systemPrompt }) 
       body: JSON.stringify({ transcript, history, act, systemPrompt }),
    });
    if (!res.ok) throw new Error(`DM ${res.status}: ${await res.text()}`);
-   return res.json(); // { response: string, mock?: boolean }
+   return res.json();
 }
 
 // ── TTS ───────────────────────────────────────────────────────────
@@ -43,12 +43,10 @@ export async function synthesizeSpeech(text, voiceId) {
    });
    if (!res.ok) throw new Error(`TTS ${res.status}: ${await res.text()}`);
 
-   // When real TTS is integrated the backend will stream audio/mpeg.
-   // Until then it returns JSON { mock: true, text }.
    const contentType = res.headers.get('content-type') || '';
    if (contentType.includes('audio')) {
       const audioBlob = await res.blob();
       return { mock: false, audioBlob };
    }
-   return res.json(); // { mock: true, text }
+   return res.json();
 }

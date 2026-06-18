@@ -36,7 +36,7 @@ import { ElevenLabsClient } from 'elevenlabs';
 
 const router = express.Router();
 
-// Adam — deep and authoritative; swap via env var or per-request voiceId
+// Adam — deep and authoritative
 const DEFAULT_VOICE = process.env.ELEVENLABS_VOICE_ID || 'pNInz6obpgDQGcFmaJgB';
 
 router.post('/', async (req, res) => {

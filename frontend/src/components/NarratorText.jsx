@@ -21,7 +21,6 @@ export default function NarratorText({ onTypingComplete }) {
       26,
       () => {
          onTypingComplete?.();
-         // After narration finishes, move to idle so the player can act
          if (status === 'narrating') setStatus('idle');
       }
    );
